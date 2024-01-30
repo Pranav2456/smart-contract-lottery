@@ -31,14 +31,24 @@ pragma solidity ^0.8.18;
  * @notice Implements Chainlink VRFv2
  */
 contract Raffle {
-    uint256 private immutable i_entranceFee;
+    error Raffle_NotEnoughEthSent(); 
+
+
+    uint256 private immutable i_entranceFee; // I means immutable
+    address payable[] private s_players; // S means state variable
 
     constructor(uint256 entranceFee) {
         i_entranceFee = entranceFee;
     }
 
     function enterRafflr() external payable{
-        require(msg.value >= i_entranceFee, "Not enough ETH to enter");
+        if (msg.value < i_entranceFee) {
+            revert Raffle_NotEnoughEthSent();
+        } // Custom errors are more gas efficient as compared to require statements, so always use custom errors.
+
+        s_players.push(payable(msg.sender));
+        // 1.Events make migration of contracts easier.
+        // 2. Makes front end "indexing" easier.
     }
 
     function pickWinner() public {}
