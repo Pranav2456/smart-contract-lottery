@@ -44,7 +44,7 @@ contract Raffle {
     function enterRafflr() external payable{
         if (msg.value < i_entranceFee) {
             revert Raffle_NotEnoughEthSent();
-        } // Custom errors are more gas efficient as compared to require statements, so always use custom errors.
+        } // Custom errors are more gas efficient as compared to require statements, so always use custom errors. 
 
         s_players.push(payable(msg.sender));
         // 1.Events make migration of contracts easier.
@@ -57,5 +57,9 @@ contract Raffle {
 
     function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getPlayers() external view returns (address payable[] memory) {
+        return s_players;
     }
 }
