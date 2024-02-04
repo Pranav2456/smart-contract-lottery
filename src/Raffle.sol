@@ -62,4 +62,8 @@ contract Raffle {
     function getPlayers() external view returns (address payable[] memory) {
         return s_players;
     }
+
+    function getPlayersCount() external view returns (uint256) {
+        return s_players.length;
+    }
 }
