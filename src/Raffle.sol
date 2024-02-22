@@ -36,6 +36,12 @@ contract Raffle is VRFConsumerBaseV2 {
 
     error Raffle_NotEnoughEthSent();
     error Raffle_TransferFailed(); 
+    error Raffle_RaffleNotOpen();
+
+    enum RaffleState {
+        OPEN,
+        CALCULATING
+    }
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -50,6 +56,7 @@ contract Raffle is VRFConsumerBaseV2 {
     uint64 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
     address private s_recentWinner;
+    RaffleState private s_raffleState;
 
     /** Events */
     event EnteredRaffle(address indexed player);
@@ -62,6 +69,7 @@ contract Raffle is VRFConsumerBaseV2 {
         i_gasLane = gasLane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
+        s_raffleState = RaffleState.OPEN;
     }
 
     function enterRafflr() external payable{
@@ -69,6 +77,9 @@ contract Raffle is VRFConsumerBaseV2 {
             revert Raffle_NotEnoughEthSent();
         } // Custom errors are more gas efficient as compared to require statements, so always use custom errors. 
 
+        if(s_raffleState != RaffleState.OPEN){
+            revert Raffle_RaffleNotOpen();
+        }
         s_players.push(payable(msg.sender));
         // 1.Events make migration of contracts easier.
         // 2. Makes front end "indexing" easier.
