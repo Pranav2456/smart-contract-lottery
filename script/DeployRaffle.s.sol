@@ -6,7 +6,7 @@ import {Raffle} from "../src/Raffle.sol";
 pragma solidity ^0.8.18;
 
 contract DeployRaffle is Script {
-    function run external returns (Raffle) {
-
+    function run() external returns (Raffle) {
+        
     }
 }
